@@ -100,6 +100,10 @@ func (os *OauthService) BeginAuth(op string) (error error, state, verifier, nonc
 	verifier = ""
 	nonce = ""
 	if op == model.OauthTypeWebauth {
+		// custom: web-sso 关闭时拒绝 webauth，与未配置的 provider 走同一错误路径（ConfigNotFound）
+		if !Config.App.WebSso {
+			return errors.New("ConfigNotFound"), state, verifier, nonce, ""
+		}
 		url = Config.Rustdesk.ApiServer + "/_admin/#/oauth/" + state
 		//url = "http://localhost:8888/_admin/#/oauth/" + code
 		return nil, state, verifier, nonce, url
