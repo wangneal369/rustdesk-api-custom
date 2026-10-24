@@ -48,7 +48,8 @@ func Init(g *gin.Engine) {
 	ShareRecordBind(adg)
 	MyBind(adg)
 
-	RustdeskCmdBind(adg)
+	// custom: 服务器命令(sendCmd/cmdList/cmdCreate/cmdDelete)仅适用于作者自研的 rustdesk-server，本项目不用，不注册
+	// RustdeskCmdBind(adg)
 	DeviceGroupBind(adg)
 	//访问静态文件
 	//g.StaticFS("/upload", http.Dir(global.Config.Gin.ResourcesPath+"/upload"))
@@ -134,7 +135,10 @@ func AddressBookBind(rg *gin.RouterGroup) {
 	aR := rg.Group("/address_book")
 	{
 		cont := &admin.AddressBook{}
-		aR.POST("/shareByWebClient", cont.ShareByWebClient)
+		// custom: 网页客户端分享仅在 app.web-client=1 时注册，关闭时不可达
+		if global.Config.App.WebClient == 1 {
+			aR.POST("/shareByWebClient", cont.ShareByWebClient)
+		}
 
 		arp := aR.Use(middleware.AdminPrivilege())
 		arp.GET("/list", cont.List)

@@ -90,7 +90,13 @@ func (us *UserService) GenerateToken(u *model.User) string {
 	if len(Jwt.Key) > 0 {
 		return Jwt.GenerateToken(u.Id)
 	}
-	return utils.Md5(u.Username + time.Now().String())
+	// custom: 未配置 JWT key 时改用密码学随机 token；48 字符 ≈ 285 bit 熵（原 md5(用户名+时间) 可预测）
+	t := utils.RandomString(48)
+	if t == "" {
+		// custom: crypto/rand 失败时 RandomString 返回空串，空 token 会被当作有效凭证，直接中止
+		panic("custom: crypto/rand unavailable, refuse to issue empty token")
+	}
+	return t
 }
 
 // Login 登录

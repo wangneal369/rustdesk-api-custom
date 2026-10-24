@@ -2,7 +2,7 @@
 runtime/*
 !runtime
 !runtime/cache/.gitkeep
-go.sum
+# custom: go.sum 入库，依赖校验和锁定以保证可复现构建
 resources/admin
 release
 data/rustdeskapi.db

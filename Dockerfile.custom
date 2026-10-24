@@ -1,0 +1,27 @@
+# custom: 自定义镜像，参见 docs/custom-build.md
+# 管理后台前端需预先构建并复制到 resources/admin（该目录已在 .gitignore 中）
+
+# Stage 1: 编译 Go 后端（sqlite 驱动依赖 CGO，参考 .github/workflows/build.yml 的 musl 构建参数）
+# custom: 基础镜像固定小版本，避免浮动标签导致构建不可复现
+FROM golang:1.26-alpine3.23 AS builder-backend
+RUN apk add --no-cache build-base
+WORKDIR /app
+COPY . .
+# custom: go mod verify 校验 go.sum，校验和不匹配时构建失败
+RUN go mod download && go mod verify && \
+    CGO_ENABLED=1 CGO_LDFLAGS="-static" go build -ldflags "-s -w" -o release/apimain cmd/apimain.go && \
+    cp -ar conf release/ && \
+    cp -ar resources release/ && \
+    mkdir -p release/data release/runtime
+
+# Stage 2: 运行时镜像
+FROM alpine:3.23
+WORKDIR /app
+RUN apk add --no-cache tzdata
+COPY --from=builder-backend /app/release /app/
+# custom: 使用构建上下文中预构建好的管理后台 dist，缺失时构建直接失败
+COPY resources/admin/ /app/resources/admin/
+
+VOLUME /app/data
+EXPOSE 21114
+CMD ["./apimain"]

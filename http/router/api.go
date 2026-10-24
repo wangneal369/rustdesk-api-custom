@@ -65,13 +65,14 @@ func ApiInit(g *gin.Engine) {
 		WebClientRoutes(frg)
 	}
 
-	{
-		au := &api.Audit{}
-		//[method:POST] [uri:/api/audit/conn]
-		frg.POST("/audit/conn", au.AuditConn)
-		//[method:POST] [uri:/api/audit/file]
-		frg.POST("/audit/file", au.AuditFile)
-	}
+	// custom: 未认证的审计写入口会让任何人写入审计记录，本项目客户端不上报审计数据，不注册
+	// {
+	// 	au := &api.Audit{}
+	// 	//[method:POST] [uri:/api/audit/conn]
+	// 	frg.POST("/audit/conn", au.AuditConn)
+	// 	//[method:POST] [uri:/api/audit/file]
+	// 	frg.POST("/audit/file", au.AuditFile)
+	// }
 
 	frg.Use(middleware.RustAuth())
 	{
