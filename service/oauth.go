@@ -104,8 +104,8 @@ func (os *OauthService) BeginAuth(op string) (error error, state, verifier, nonc
 		if !Config.App.WebSso {
 			return errors.New("ConfigNotFound"), state, verifier, nonce, ""
 		}
-		url = Config.Rustdesk.ApiServer + "/_admin/#/oauth/" + state
-		//url = "http://localhost:8888/_admin/#/oauth/" + code
+		url = Config.Rustdesk.ApiServer + "/console/#/oauth/" + state
+		//url = "http://localhost:8888/console/#/oauth/" + code
 		return nil, state, verifier, nonce, url
 	}
 	err, oauthInfo, oauthConfig, _ := os.GetOauthConfig(op)

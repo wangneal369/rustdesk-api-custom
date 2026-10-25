@@ -10,7 +10,7 @@ type Index struct {
 }
 
 func (i *Index) Index(c *gin.Context) {
-	c.Redirect(302, "/_admin/")
+	c.Redirect(302, "/console/")
 }
 
 func (i *Index) ConfigJs(c *gin.Context) {

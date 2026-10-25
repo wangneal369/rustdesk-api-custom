@@ -7,7 +7,7 @@
 - `app.web-client: 0`：网页客户端及访客分享功能默认关闭（接口不注册、静态文件不挂载）。
 - `admin.title`：管理后台标题，默认 `RustDesk 管理后台`。
 - `rustdesk.id-server` / `relay-server` / `api-server`：为占位符 `your.server.ip`，部署前请改为自己的地址。
-- 服务器命令（`/api/admin/rustdesk/*`）与 `shareByWebClient` 接口在当前版本中不注册。
+- 服务器命令（`/api/console/rustdesk/*`）与 `shareByWebClient` 接口在当前版本中不注册。
 
 配置文件位于 `conf/config.yaml`，镜像构建时会打包进去。若需要在部署时覆盖，请挂载外部文件，而不是修改镜像内容。
 
@@ -60,4 +60,5 @@ docker run -d --name rustdesk-api -p 21114:21114 -v rustdesk-api-data:/app/data 
 ## 注意事项
 
 - 如需开启网页客户端，将 `app.web-client` 改为 `1` 后重新构建镜像，并确认 `resources/web` 存在。
+- 管理端响应信封已改为 `errcode` / `errmsg` / `payload`（`http/response/response.go`）。网页客户端路由（`/api/shared-peer`、`/api/server-config*`）仍使用同一结构体，因此开启网页客户端后，其前端 JS 需要读取新键名。
 - 本地 Windows 环境若 CGO 编译失败，可直接使用上述 Docker 构建，避免依赖本机 C 编译器。

@@ -19,7 +19,8 @@ func Init(g *gin.Engine) {
 		g.GET("/admin/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, ginSwagger.InstanceName("admin")))
 	}
 
-	adg := g.Group("/api/admin")
+	// custom: 管理端 API 前缀改为 /api/console（与 /console 配套），旧前缀 /api/admin 不再注册
+	adg := g.Group("/api/console")
 	LoginBind(adg)
 	adg.POST("/user/register", (&admin.User{}).Register)
 

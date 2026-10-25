@@ -19,5 +19,6 @@ func WebInit(g *gin.Engine) {
 		g.StaticFS("/webclient", http.Dir(global.Config.Gin.ResourcesPath+"/web"))
 		g.StaticFS("/webclient2", http.Dir(global.Config.Gin.ResourcesPath+"/web2"))
 	}
-	g.StaticFS("/_admin", http.Dir(global.Config.Gin.ResourcesPath+"/admin"))
+	// custom: 管理后台路径改为 /console，避免 /_admin 暴露上游项目特征；旧路径不保留别名
+	g.StaticFS("/console", http.Dir(global.Config.Gin.ResourcesPath+"/admin"))
 }

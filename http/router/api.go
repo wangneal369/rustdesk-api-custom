@@ -25,8 +25,10 @@ func ApiInit(g *gin.Engine) {
 
 	{
 		i := &api.Index{}
-		frg.GET("/", i.Index)
-		frg.GET("/version", i.Version)
+		// custom: 根路径 /api/ 原返回上游模板欢迎语 "Hello Gwen"，客户端不调用，不注册
+		// frg.GET("/", i.Index)
+		// custom: 版本接口仅返回上游版本文件内容，本项目的管理后台与 RustDesk 客户端都不调用，不注册
+		// frg.GET("/version", i.Version)
 
 		frg.POST("/heartbeat", i.Heartbeat)
 	}

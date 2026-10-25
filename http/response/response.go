@@ -8,10 +8,12 @@ import (
 	"net/http"
 )
 
+// custom: 管理端信封键名改为 errcode/errmsg/payload，避免上游 code/message/data 指纹；数值不变。
+// DataResponse/ErrorResponse 仍被客户端路由使用，不改。
 type Response struct {
-	Code    int         `json:"code"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	Code    int         `json:"errcode"`
+	Message string      `json:"errmsg"`
+	Data    interface{} `json:"payload"`
 }
 type PageData struct {
 	Page  int         `json:"page"`
